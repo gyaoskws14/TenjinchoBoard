@@ -1,0 +1,26 @@
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;    
+}
+
+header h1 {
+    margin: 0;
+    font-size: clamp(1.75rem, 4.5vw, 3rem);
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    line-height: 1;
+}
+
+.header-logo {
+    height: 36px;
+    width: auto;
+    display: block;
+    margin: 0;
+}
