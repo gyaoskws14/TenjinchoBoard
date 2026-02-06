@@ -5,32 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>自治体掲示板</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sakura.css/css/sakura.css">
-    <style>
-    header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-    .header-brand {
-        display: flex;
-        align-items: center;
-        gap: 10px; /* ロゴを見出しにくっつける */
-    }
-    header h1 {
-        margin: 0;
-        /* より大きく太い見出しに調整（レスポンシブ） */
-        font-size: clamp(1.75rem, 4.5vw, 3rem);
-        font-weight: 900;
-        letter-spacing: 0.02em;
-        line-height: 1;
-    }
-    .header-logo {
-        height: 36px;
-        width: auto;
-        display: block;
-        margin: 0;
-    }
-    </style>
+    <link rel="stylesheet" href="{{ '/assets/css/default.css' | relative_url }}">
 </head>
 <body>
     <header>
@@ -47,7 +22,7 @@
 
     <footer>
         <hr>
-        <p>&copy; 2026 天神町自治会</p>
+        <p>&copy; {{ 'now' | date: "%Y" }} 天神町自治会</p>
     </footer>
 </body>
 </html>
