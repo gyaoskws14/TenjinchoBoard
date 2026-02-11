@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF閲覧</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #f3f4f6;
+      font-family: system-ui, sans-serif;
+    }
+
+    .bar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+
+    #pages {
+      max-width: 980px;
+      margin: 12px auto 24px;
+      padding: 0 12px;
+      display: grid;
+      gap: 12px;
+    }
+
+    canvas {
+      width: 100%;
+      height: auto;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    }
+  </style>
+</head>
+<body>
+  <div class="bar" id="status">PDFを読み込み中...</div>
+  <div id="pages"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    const statusEl = document.getElementById("status");
+    const pagesEl = document.getElementById("pages");
+
+    const params = new URLSearchParams(window.location.search);
+    const file = (params.get("file") || "").trim();
+    const allowed = /^[A-Za-z0-9_.-]+\.pdf$/i.test(file);
+
+    if (!allowed) {
+      statusEl.textContent = "表示できるPDFが指定されていません。";
+    } else {
+      const pdfUrl = new URL(file, window.location.href).toString();
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+      pdfjsLib.getDocument(pdfUrl).promise
+        .then(async (pdf) => {
+          statusEl.textContent = "全 " + pdf.numPages + " ページ";
+          for (let n = 1; n <= pdf.numPages; n++) {
+            const page = await pdf.getPage(n);
+            const viewport = page.getViewport({ scale: 1.35 });
+            const canvas = document.createElement("canvas");
+            const context = canvas.getContext("2d");
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            await page.render({ canvasContext: context, viewport: viewport }).promise;
+            pagesEl.appendChild(canvas);
+          }
+        })
+        .catch(() => {
+          statusEl.textContent = "PDFを表示できませんでした。";
+        });
+    }
+  </script>
+</body>
+</html>
